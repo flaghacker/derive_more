@@ -7,32 +7,25 @@ extern crate derive_more;
 fn main() {}
 
 /// Some docs
-#[derive(
-    Add,
-    AddAssign,
-    Constructor,
-    Display,
-    From,
-    FromStr,
-    Into,
-    Mul,
-    MulAssign,
-    Not
-)]
-pub struct MyInt(i32);
-
-/// Some docs
-#[derive(Deref, DerefMut)]
-pub struct MyBoxedInt(Box<i32>);
-
-/// Some docs
-#[derive(Index, IndexMut)]
 pub struct MyVec(Vec<i32>);
-
-/// Some docs
-#[allow(dead_code)]
-#[derive(Clone, Copy, TryInto)]
-enum MixedInts {
-    SmallInt(i32),
-    NamedBigInt { int: i64 },
+impl<__IdxT, __IdxOutputT: ?Sized> ::core::ops::Index<__IdxT> for MyVec
+where
+    Vec<i32>: ::core::ops::Index<__IdxT, Output = __IdxOutputT>,
+{
+    type Output = __IdxOutputT;
+    #[inline]
+    fn index(&self, idx: __IdxT) -> &Self::Output {
+        let indexable = &self.0;
+        <Vec<i32> as ::core::ops::Index<__IdxT>>::index(indexable, idx)
+    }
+}
+impl<__IdxT> ::core::ops::IndexMut<__IdxT> for MyVec
+where
+    Vec<i32>: ::core::ops::IndexMut<__IdxT>,
+{
+    #[inline]
+    fn index_mut(&mut self, idx: __IdxT) -> &mut Self::Output {
+        let indexable = &mut self.0;
+        <Vec<i32> as ::core::ops::IndexMut<__IdxT>>::index_mut(indexable, idx)
+    }
 }

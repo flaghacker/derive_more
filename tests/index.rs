@@ -4,30 +4,31 @@ extern crate derive_more;
 
 use std::collections::{BTreeMap, HashMap};
 
-#[derive(Index)]
+#[derive(Index, IndexMut)]
 struct MyVec(Vec<i32>);
 
-#[derive(Index)]
+#[derive(Index, IndexMut)]
 struct Numbers {
     #[index]
     numbers: Vec<i32>,
-    useless: bool,
 }
 
-#[derive(Index)]
-enum SomeMap {
-    Hash(HashMap<i32, u64>),
-    BTree(BTreeMap<i32, u64>),
+#[derive(Index, IndexMut)]
+enum MyVecs {
+    MyVecVariant(MyVec),
+    NumbersVariant(Numbers),
 }
 
 #[test]
 fn enum_index() {
-    let mut hmap = HashMap::new();
-    hmap.insert(123, 456);
-    assert_eq!(456, SomeMap::Hash(hmap)[&123]);
-    let mut bmap = BTreeMap::new();
-    bmap.insert(4, 8);
-    assert_eq!(8, SomeMap::BTree(bmap)[&4]);
+    let v = MyVecs::MyVecVariant(MyVec(vec![10, 20, 30]));
+    assert_eq!(10, v[0]);
+    let mut nums = MyVecs::NumbersVariant(Numbers {
+        numbers: vec![100, 200, 300],
+    });
+    assert_eq!(200, nums[1]);
+    nums[2] = 400;
+    assert_eq!(400, nums[2]);
 }
 
 #[derive(Index)]
